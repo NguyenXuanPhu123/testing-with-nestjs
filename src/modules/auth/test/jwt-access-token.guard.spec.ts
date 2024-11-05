@@ -36,7 +36,7 @@ describe('JwtAccessTokenGuard', () => {
 
     // Act & Assert
     expect(guard.canActivate(execution_context)).toBeTruthy();
-    expect(reflector.getAllAndOverride).toBeCalledWith(IS_PUBLIC_KEY, [
+    expect(reflector.getAllAndOverride).toHaveBeenCalledWith(IS_PUBLIC_KEY, [
       execution_context.getHandler(),
       execution_context.getClass(),
     ]);
@@ -50,10 +50,10 @@ describe('JwtAccessTokenGuard', () => {
       .mockReturnValueOnce(true);
     // Act & Assert
     expect(guard.canActivate(execution_context)).toBeTruthy();
-    expect(reflector.getAllAndOverride).toBeCalledWith(IS_PUBLIC_KEY, [
+    expect(reflector.getAllAndOverride).toHaveBeenCalledWith(IS_PUBLIC_KEY, [
       execution_context.getHandler(),
       execution_context.getClass(),
     ]);
-    expect(AuthGuard('jwt').prototype.canActivate).toBeCalledTimes(1);
+    expect(AuthGuard('jwt').prototype.canActivate).toHaveBeenCalledTimes(1);
   });
 });

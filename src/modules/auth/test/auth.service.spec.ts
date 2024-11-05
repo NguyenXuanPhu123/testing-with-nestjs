@@ -9,15 +9,9 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { AuthService } from '../auth.service';
 import { DeepMocked, createMock } from '@golevelup/ts-jest';
-
-// OUTER MODULE
 import { UsersService } from '../../users/users.service';
 import { SignUpDto } from '../dto/sign-up.dto';
-
-// MOCK
 import { mock_access_token, mock_refresh_token } from './mocks/tokens.mock';
-
-// STUB
 import { createUserStub } from '../../users/test/stubs/user.stub';
 
 jest.mock('../../users/users.service');
@@ -89,7 +83,7 @@ describe('AuthService', function () {
       expect(auth_service.generateRefreshToken).toHaveBeenCalledWith({
         user_id: user_stub._id,
       });
-      expect(auth_service.storeRefreshToken).toBeCalledWith(
+      expect(auth_service.storeRefreshToken).toHaveBeenCalledWith(
         user_stub._id,
         mock_refresh_token,
       );
@@ -119,7 +113,7 @@ describe('AuthService', function () {
       const result = await auth_service.signIn(user_stub._id as string);
 
       // Assert
-      expect(auth_service.storeRefreshToken).toBeCalledWith(
+      expect(auth_service.storeRefreshToken).toHaveBeenCalledWith(
         user_stub._id,
         mock_refresh_token,
       );
@@ -163,7 +157,7 @@ describe('AuthService', function () {
       });
 
       // Assert
-      expect(jwt_service.sign).toBeCalledWith(
+      expect(jwt_service.sign).toHaveBeenCalledWith(
         { user_id: user_stub._id },
         expect.objectContaining({
           algorithm: 'RS256',
@@ -185,11 +179,11 @@ describe('AuthService', function () {
         mock_refresh_token,
       );
       // Assert
-      expect(bcrypt.hash).toBeCalledWith(
+      expect(bcrypt.hash).toHaveBeenCalledWith(
         mock_refresh_token,
         auth_service['SALT_ROUND'],
       );
-      expect(users_service.setCurrentRefreshToken).toBeCalledWith(
+      expect(users_service.setCurrentRefreshToken).toHaveBeenCalledWith(
         user_stub._id,
         mock_refresh_token,
       );
@@ -203,7 +197,6 @@ describe('AuthService', function () {
       jest.spyOn(users_service, 'getUserByEmail').mockResolvedValueOnce(null);
 
       // Act & Assert
-      // Learn more about asynchronous task https://jestjs.io/docs/expect#rejects
       await expect(
         auth_service.getAuthenticatedUser(user_stub.email, user_stub.password),
       ).rejects.toThrow(BadRequestException);
