@@ -4,8 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { database_config } from '@configs/configuration.config';
-import { UsersModule } from '@modules/users/users.module';
+import { database_config } from '../src/configs/configuration.config';
+import { UsersModule } from '../src/modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 @Module({
   imports: [
@@ -20,6 +20,7 @@ import { AuthModule } from './modules/auth/auth.module';
         DATABASE_PASSWORD: Joi.string().min(4).required(),
         DATABASE_HOST: Joi.string().required(),
         DATABASE_URI: Joi.string().required(),
+        DATABASE_NAME: Joi.string().required(),
       }),
       validationOptions: {
         abortEarly: false,

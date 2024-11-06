@@ -9,5 +9,6 @@ export const createUserStub = (): User => {
     password: 'strongestP@ssword',
     username: 'johndoe',
     gender: GENDER.MALE,
+    current_refresh_token: 'refresh_token',
   };
 };

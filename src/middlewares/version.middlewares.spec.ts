@@ -73,10 +73,8 @@ describe('VersionMiddleware', () => {
 
       /* Option 2: */
       // Act & Assert
-      expect(() => middleware.use(req, res, next)).toThrowError(
-        BadRequestException,
-      );
-      expect(() => middleware.use(req, res, next)).toThrowError(
+      expect(() => middleware.use(req, res, next)).toThrow(BadRequestException);
+      expect(() => middleware.use(req, res, next)).toThrow(
         'Invalid App Version',
       );
     });

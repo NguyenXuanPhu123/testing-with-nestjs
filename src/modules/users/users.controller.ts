@@ -25,10 +25,6 @@ export class UsersController {
   @Post()
   @ApiOperation({
     summary: 'Admin create new user',
-    description: `
-* Only admin can use this API
-
-* Admin create user and give some specific information`,
   })
   create(@Body() create_user_dto: CreateUserDto) {
     return this.users_service.create(create_user_dto);
