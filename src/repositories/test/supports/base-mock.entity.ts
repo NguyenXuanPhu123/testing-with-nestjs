@@ -7,8 +7,12 @@ export abstract class BaseMockEntity<T> {
     };
   }
 
-  async findById() {
-    return this.entity_stub;
+  async findById(id: string) {
+    if (id === '643d0fb80a2f99f4151176c4') {
+      return this.entity_stub;
+    } else {
+      return null;
+    }
   }
   findOne(): { exec: () => T } {
     return {

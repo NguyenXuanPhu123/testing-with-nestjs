@@ -8,21 +8,17 @@ import {
   Patch,
   Post,
   Query,
-  SerializeOptions,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAccessTokenGuard } from '../auth/guards/jwt-access-token.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-// import MongooseClassSerializerInterceptor from 'src/interceptors/mongoose-class-serializer.interceptor';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAccessTokenGuard } from '../auth/guards/jwt-access-token.guard';
-// import { ApiDocsPagination } from 'src/decorators/swagger-form-data.decorator';
 
 @Controller('users')
 @ApiTags('users')
 @ApiBearerAuth('token')
-// @UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class UsersController {
   constructor(private readonly users_service: UsersService) {}
 
@@ -38,9 +34,6 @@ export class UsersController {
     return this.users_service.create(create_user_dto);
   }
 
-  @SerializeOptions({
-    excludePrefixes: ['first', 'last'],
-  })
   @Get()
   @UseGuards(JwtAccessTokenGuard)
   findAll(

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import {
   BadRequestException,
   ConflictException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -122,6 +123,17 @@ describe('AuthService', function () {
         refresh_token: mock_refresh_token,
       });
     });
+
+    it('should throw exception if pass wrong user id', async () => {
+      // Arrange
+      const wrong_user_id = 'wrongUserId';
+
+      // Act, Assert
+
+      await expect(auth_service.signIn(wrong_user_id)).rejects.toThrow(
+        TypeError,
+      );
+    });
   });
 
   describe('generateAccessToken', () => {
@@ -187,6 +199,18 @@ describe('AuthService', function () {
         user_stub._id,
         mock_refresh_token,
       );
+    });
+
+    it('should throw exception if pass a wrong user id', async () => {
+      // Arrange
+      const wrong_user_id = 'wrongUserId';
+      const token = 'token';
+
+      // Act, Assert
+
+      await expect(
+        auth_service.storeRefreshToken(wrong_user_id, token),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 

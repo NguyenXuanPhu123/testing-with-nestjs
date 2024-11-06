@@ -4,6 +4,7 @@ import { createUserStub } from './stubs/user.stub';
 import { FindAllResponse, PaginateParams } from 'src/types/common.type';
 import { User } from '../entities/user.entity';
 import { UsersRepository } from '@repositories/users.repository';
+import { NotFoundException } from '@nestjs/common';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -14,8 +15,19 @@ describe('UsersService', () => {
       count: 1,
       items: [createUserStub()],
     } as FindAllResponse<User>),
-    findOneByCondition: jest.fn().mockResolvedValue(createUserStub()),
-    update: jest.fn((id, dto: Partial<User>) => ({ ...createUserStub(), dto })),
+    findOneByCondition: jest.fn(({ email }) => {
+      if (email === createUserStub().email) {
+        return createUserStub();
+      }
+      return null;
+    }),
+    update: jest.fn((id, dto: Partial<User>) => {
+      if (id === createUserStub()._id) {
+        return { ...createUserStub(), dto };
+      } else {
+        throw new NotFoundException();
+      }
+    }),
   };
 
   beforeEach(async () => {
@@ -83,6 +95,16 @@ describe('UsersService', () => {
       expect(repository.findOneByCondition).toHaveBeenCalled();
       expect(result).toEqual(createUserStub());
     });
+
+    it('should throw not found exception if pass wrong email', async () => {
+      // Arrange
+      const wrong_email = 'wrong@email.com';
+
+      // Act, Arrange
+      await expect(service.getUserByEmail(wrong_email)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
   });
 
   describe('setCurrentRefreshToken', () => {
@@ -97,6 +119,18 @@ describe('UsersService', () => {
 
       // Assert
       expect(repository.update).toHaveBeenCalled();
+    });
+
+    it('should throw new error if pass a wrong user id', async () => {
+      // Arrange
+      const wrong_user_id = 'wrongUserId';
+      const hashed_token = 'hashed_token';
+
+      // Act, Assert
+
+      await expect(
+        service.setCurrentRefreshToken(wrong_user_id, hashed_token),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

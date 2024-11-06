@@ -72,4 +72,35 @@ describe('UsersController', () => {
       expect(result).toEqual(createUserStub());
     });
   });
+
+  describe('findAll', () => {
+    it('should return list all of user', async () => {
+      // Arrange
+      const offset = 4;
+      const limit = 10;
+
+      // Act
+      const result = await controller.findAll(offset, limit);
+
+      // Assert
+      expect(service.findAll).toHaveBeenCalled();
+      expect(result).toEqual([createUserStub()]);
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove a user base on userId', async () => {
+      // Arrange
+      const { _id } = createUserStub();
+      const isRemoveSuccess = true;
+      jest.spyOn(service, 'remove');
+
+      // Act
+      const result = await controller.remove(_id as string);
+
+      // Assert
+      expect(service.remove).toHaveBeenCalled();
+      expect(result).toEqual(isRemoveSuccess);
+    });
+  });
 });

@@ -131,6 +131,20 @@ describe('UsersRepository', () => {
       });
       expect(result).toBeTruthy();
     });
+
+    it('should return false if pass a wrong user id', async () => {
+      // Arrange
+      const wrong_user_id = 'wrong_user_id';
+      jest.spyOn(model, 'findById');
+      jest.spyOn(model, 'findByIdAndUpdate').mockReturnThis();
+
+      // Act
+      const result = await repository.softDelete(wrong_user_id);
+
+      // Assert
+      expect(model.findById).toHaveBeenCalled();
+      expect(result).toEqual(false);
+    });
   });
   describe('permanentlyDelete', () => {
     it('should permanently delete user with given id', async () => {
